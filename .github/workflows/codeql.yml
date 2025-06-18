@@ -1,4 +1,4 @@
-name: "CodeQL C# Manual Build"
+name: "CodeQL C# Build‑free Analysis"
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   analyze-csharp:
-    name: Scan C# Code
+    name: Scan C# Code (no-build)
     runs-on: windows-latest
     timeout-minutes: 120
     permissions:
@@ -23,25 +23,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.x'
-
-      - name: Initialize CodeQL (manual)
+      - name: Initialize CodeQL CLI (no build)
         uses: github/codeql-action/init@v3
         with:
           languages: csharp
-          build-mode: manual
+          build-mode: none
           queries: security-extended,security-and-quality
-
-      - name: Restore & build C# code
-        run: |
-          dotnet restore
-          dotnet build --configuration Release --no-restore
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "csharp-manual-scan"
+          category: "csharp-no-build"
           upload: always
